@@ -566,6 +566,7 @@ if (typeof Slick === "undefined") {
             .attr("title", m.toolTip || "")
             .data("column", m)
             .addClass(m.headerCssClass || "")
+            .addClass(m.frozen ? "frozen" : "")
             .appendTo($headers);
 
         if (options.enableColumnReorder || m.sortable) {
@@ -1120,13 +1121,37 @@ if (typeof Slick === "undefined") {
     }
 
     function applyColumnWidths() {
-      var x = 0, w, rule;
-      for (var i = 0; i < columns.length; i++) {
-        w = columns[i].width;
+      var x = 0, w, rule, column,
+        offsetX,
+        frozenAnchor = 'left',
+        nextHeaderColumnMarginLeft = 0,
+        headerColumnEls = $headers.children();
 
+      for (var i = 0; i < columns.length; i++) {
+        column = columns[i];
+        w = column.width;
+        if (column.frozen) {
+          offsetX = scrollLeft;
+          if (frozenAnchor === 'right') {
+            offsetX += (viewportW - canvasWidth);
+          }
+          headerMarginLeft = offsetX + x;
+          nextHeaderColumnMarginLeft += w;
+        } else {
+          offsetX = 0;
+          frozenAnchor = 'right';
+          // regular columns need left margin to compensate missing sibling width
+          if (nextHeaderColumnMarginLeft > 0) {
+            headerMarginLeft = nextHeaderColumnMarginLeft;
+            nextHeaderColumnMarginLeft = 0;
+          } else {
+            headerMarginLeft = 0;
+          }
+        }
         rule = getColumnCssRules(i);
-        rule.left.style.left = x + "px";
-        rule.right.style.right = (canvasWidth - x - w) + "px";
+        rule.left.style.left = (offsetX + x) + "px";
+        rule.right.style.right = (canvasWidth - x - offsetX - w) + "px";
+        headerColumnEls[i].style['margin-left'] = headerMarginLeft + "px";
 
         x += columns[i].width;
       }
@@ -1453,6 +1478,7 @@ if (typeof Slick === "undefined") {
     function appendCellHtml(stringArray, row, cell, colspan, item) {
       var m = columns[cell];
       var cellCss = "slick-cell l" + cell + " r" + Math.min(columns.length - 1, cell + colspan - 1) +
+          (m.frozen ? " frozen" : "") +
           (m.cssClass ? " " + m.cssClass : "");
       if (row === activeRow && cell === activeCell) {
         cellCss += (" active");
@@ -1515,7 +1541,7 @@ if (typeof Slick === "undefined") {
       } else {
         $canvas[0].removeChild(cacheEntry.rowNode);
       }
-      
+
       delete rowsCache[row];
       delete postProcessedRows[row];
       renderedRows--;
@@ -1984,6 +2010,7 @@ if (typeof Slick === "undefined") {
         $headerScroller[0].scrollLeft = scrollLeft;
         $topPanelScroller[0].scrollLeft = scrollLeft;
         $headerRowScroller[0].scrollLeft = scrollLeft;
+        applyColumnWidths();
       }
 
       if (vScrollDist) {
@@ -2162,7 +2189,7 @@ if (typeof Slick === "undefined") {
           $canvas[0].removeChild(zombieRowNodeFromLastMouseWheelEvent);
           zombieRowNodeFromLastMouseWheelEvent = null;
         }
-        rowNodeFromLastMouseWheelEvent = rowNode;      
+        rowNodeFromLastMouseWheelEvent = rowNode;
       }
     }
 
@@ -2217,7 +2244,7 @@ if (typeof Slick === "undefined") {
             cancelEditAndSetFocus();
           } else if (e.which == 34) {
             navigatePageDown();
-            handled = true;           
+            handled = true;
           } else if (e.which == 33) {
             navigatePageUp();
             handled = true;
@@ -2774,7 +2801,7 @@ if (typeof Slick === "undefined") {
         var prevActivePosX = activePosX;
         while (cell <= activePosX) {
           if (canCellBeActive(row, cell)) {
-            prevCell = cell;  
+            prevCell = cell;
           }
           cell += getColspan(row, cell);
         }

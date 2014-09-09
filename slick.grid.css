@@ -130,6 +130,16 @@ classes should alter those!
   border-style: solid;
 }
 
+.slick-cell.frozen {
+  background: white;
+  z-index: 10;
+}
+
+.slick-header-column.frozen {
+  position: absolute;
+  z-index: 10;
+}
+
 .slick-cell:focus {
   outline: none;
 }

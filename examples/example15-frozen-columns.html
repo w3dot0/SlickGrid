@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <title>SlickGrid example 1: Basic grid</title>
+  <link rel="stylesheet" href="../slick.grid.css" type="text/css"/>
+  <link rel="stylesheet" href="../css/smoothness/jquery-ui-1.8.16.custom.css" type="text/css"/>
+  <link rel="stylesheet" href="../controls/slick.columnpicker.css" type="text/css"/>
+
+  <link rel="stylesheet" href="examples.css" type="text/css"/>
+</head>
+<body>
+  <table width="100%">
+    <tr>
+      <td valign="top" width="50%">
+        <div id="myGrid" style="width:600px;height:500px;"></div>
+      </td>
+      <td valign="top">
+        <h2>Demonstrates:</h2>
+        <ul>
+          <li>frozen columns</li>
+        </ul>
+        <h2>View Source:</h2>
+        <ul>
+          <li>
+            <A href="https://github.com/w3dot0/SlickGrid/blob/gh-pages/examples/example15-frozen-columns.html" target="_sourcewindow">View the source for this example on Github</a>
+          </li>
+        </ul>
+      </td>
+    </tr>
+  </table>
+
+  <script src="../lib/jquery-1.7.min.js"></script>
+  <script src="../lib/jquery.event.drag-2.2.js"></script>
+  <script src="../slick.core.js"></script>
+  <script src="../slick.grid.js"></script>
+  <script src="../plugins/slick.checkboxselectcolumn.js"></script>
+  <script src="../plugins/slick.autotooltips.js"></script>
+  <script src="../plugins/slick.cellrangedecorator.js"></script>
+  <script src="../plugins/slick.cellrangeselector.js"></script>
+  <script src="../plugins/slick.cellcopymanager.js"></script>
+  <script src="../plugins/slick.cellselectionmodel.js"></script>
+  <script src="../plugins/slick.rowselectionmodel.js"></script>
+  <script src="../controls/slick.columnpicker.js"></script>
+
+
+  <script>
+  var checkboxSelector = new Slick.CheckboxSelectColumn({
+     cssClass: "slick-cell-checkboxsel"
+  });
+  var checkBoxColumn = checkboxSelector.getColumnDefinition();
+  checkBoxColumn.frozen = true;
+
+  var grid;
+  var columns = [
+    {id: "id", name: "ID", field: "id", width: 50, frozen: true},
+    {id: "a", name: "A", field: "a", width: 200},
+    {id: "b", name: "B", field: "b", width: 200},
+    {id: "c", name: "C", field: "c", width: 200},
+    {id: "d", name: "D", field: "d", width: 200},
+    checkBoxColumn
+   ];
+
+  var options = {
+    enableCellNavigation: true,
+    enableColumnReorder: false
+  };
+
+  $(function () {
+    var data = [];
+    for (var i = 0; i < 500; i++) {
+      data[i] = {
+        id: i,
+        a: "A " + i,
+        b: "B " + i,
+        c: "C " + i,
+        d: "D " + i,
+      };
+    }
+
+    grid = new Slick.Grid("#myGrid", data, columns, options);
+  })
+</script></body>
+</html>
