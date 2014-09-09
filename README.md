@@ -17,6 +17,7 @@ Some highlights:
 * Full keyboard navigation
 * Column resize/reorder/show/hide
 * Column autosizing & force-fit
+* Support for frozen columns
 * Pluggable cell formatters & editors
 * Support for editing and creating new rows.
 * Grouping, filtering, custom aggregators, and more!
